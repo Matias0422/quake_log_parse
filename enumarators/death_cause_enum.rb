@@ -1,4 +1,4 @@
-class DeathCouseEnum
+class DeathCauseEnum
   MOD_UNKNOWN = 'MOD_UNKNOWN'
   MOD_SHOTGUN = 'MOD_SHOTGUN'
   MOD_GAUNTLET = 'MOD_GAUNTLET'

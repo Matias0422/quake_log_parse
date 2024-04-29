@@ -3,7 +3,7 @@ require 'byebug'
 require 'parslet'
 require 'parslet/convenience'
 
-require_relative 'death_couse_enum'
+require_relative 'death_cause_enum'
 
 class MatchParser < Parslet::Parser
   LOG_FILE_PATH = 'quake_log.txt'
@@ -17,7 +17,7 @@ class MatchParser < Parslet::Parser
   rule(:number) { match('[0-9]+').repeat(1) }
   rule(:timestamp) { number >> str(':') >> number }
   rule(:name) { match('\w[^\n]+\w').repeat(1) }
-  rule(:death_couse) { match('[' + DeathCouseEnum.constants.join('|') + ']').repeat(1) }
+  rule(:death_cause) { match('[' + DeathCauseEnum.constants.join('|') + ']').repeat(1) }
 
   # Lines
   rule(:init_game_line) {
@@ -35,7 +35,7 @@ class MatchParser < Parslet::Parser
     str(' killed ') >>
     name.as(:victim_name) >>
     str(' by ') >>
-    death_couse.as(:death_couse)
+    death_cause.as(:death_cause)
   }
   rule(:player_connect_line) {
     str('ClientConnect:') >>
@@ -120,8 +120,8 @@ class MatchParser < Parslet::Parser
     @current_match = {
       total_kills: 0,
       players: {},
-      kills_by_means: DeathCouseEnum.constants.map do |death_couse|
-         [death_couse, 0]
+      kills_by_means: DeathCouseEnum.constants.map do |death_cause|
+         [death_cause, 0]
       end.to_h
     }
   end
@@ -161,9 +161,9 @@ class MatchParser < Parslet::Parser
   end
 
   def handle_kills_by_means(parse_tree)
-    death_couse = parse_tree[:kill_line][:death_couse].to_sym
+    death_cause = parse_tree[:kill_line][:death_cause].to_sym
 
-    @current_match[:kills_by_means][death_couse] += 1
+    @current_match[:kills_by_means][death_cause] += 1
   end
 end
 
