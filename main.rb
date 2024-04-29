@@ -3,11 +3,11 @@ require 'byebug'
 require 'parslet'
 require 'parslet/convenience'
 
-require_relative 'death_cause_enum'
+require './enumarators/death_cause_enum.rb'
 
 class MatchParser < Parslet::Parser
   LOG_FILE_PATH = 'quake_log.txt'
-  LINES_CHUNK = 100
+  LINES_CHUNK_NUMBER = 100
   MATCH_DELIMITER_REGEX = /-{60}/
   WORLD_PLAYER_ID = 1022
 
@@ -72,7 +72,7 @@ class MatchParser < Parslet::Parser
 
   def call
     File.open(LOG_FILE_PATH, "r") do |file|
-      file.each_slice(LINES_CHUNK) do |lines|
+      file.each_slice(LINES_CHUNK_NUMBER) do |lines|
         parse_lines(lines)
       end
     end
@@ -98,7 +98,7 @@ class MatchParser < Parslet::Parser
   end
 
   def parse_line(line)
-    parse_tree = parse_with_debug(line)
+    parse_tree = parse(line)
 
     return if parse_tree.nil?
 
@@ -114,13 +114,15 @@ class MatchParser < Parslet::Parser
     else
       # do nothing
     end
+  rescue Parslet::ParseFailed
+    return
   end
 
   def handle_init_game_line(parse_tree)
     @current_match = {
       total_kills: 0,
       players: {},
-      kills_by_means: DeathCouseEnum.constants.map do |death_cause|
+      kills_by_means: DeathCauseEnum.constants.map do |death_cause|
          [death_cause, 0]
       end.to_h
     }
