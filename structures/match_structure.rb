@@ -1,5 +1,8 @@
 require './enumarators/death_cause_enum.rb'
 
+
+# PASSAR PLAYERS PARA OUTRA ESTRUTURA E CONSIDERAR O WORLD COMO UM PLAYER <<<<<<<<<<<<<
+
 class MatchStructure
   attr_accessor :total_kills, :players, :kills_by_means
 
