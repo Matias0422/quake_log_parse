@@ -28,4 +28,10 @@ class DeathCauseEnum
   MOD_KAMIKAZE = 'MOD_KAMIKAZE'
   MOD_JUICED = 'MOD_JUICED'
   MOD_GRAPPLE = 'MOD_GRAPPLE'
+
+  def self.new_hash_counter
+    constants.map do |death_cause|
+      [death_cause, 0]
+    end.to_h
+  end
 end

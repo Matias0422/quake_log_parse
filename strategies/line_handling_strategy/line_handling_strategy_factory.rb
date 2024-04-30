@@ -1,7 +1,7 @@
-require_relative './strategies/init_game_line_strategy.rb'
-require_relative './strategies/kill_line_strategy.rb'
-require_relative './strategies/player_connect_line_strategy.rb'
-require_relative './strategies/player_changed_line_strategy.rb'
+require_relative './strategy_types/init_game_line_strategy.rb'
+require_relative './strategy_types/kill_line_strategy.rb'
+require_relative './strategy_types/player_connect_line_strategy.rb'
+require_relative './strategy_types/player_changed_line_strategy.rb'
 
 class LineHandlingStrategyFactory
   HASH_FACTORY = {

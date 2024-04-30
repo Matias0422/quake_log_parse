@@ -4,8 +4,6 @@ require 'parslet'
 require './enumarators/death_cause_enum.rb'
 
 class QuakeLogParser < Parslet::Parser
-  LOG_FILE_PATH = 'quake_log.txt'
-  LINES_BATCH_NUMBER = 100
   MATCH_DELIMITER_REGEX = /-{60}/
 
   # Elements
@@ -63,14 +61,17 @@ class QuakeLogParser < Parslet::Parser
 
   def initialize
     @current_match = nil
+    @match_report = MatchReport.new
   end
 
   def call
-    File.open(LOG_FILE_PATH, "r") do |file|
-      file.each_slice(LINES_BATCH_NUMBER) do |lines|
+    File.open(ENV['LOG_FILE_PATH'], "r") do |file|
+      file.each_slice(ENV['LINES_BATCH_NUMBER']) do |lines|
         parse_lines(lines)
       end
     end
+
+    @match_report.print!
   end
 
   private
@@ -97,6 +98,7 @@ class QuakeLogParser < Parslet::Parser
   end
 
   def conclude_match
+    @match_report.increment_line(@current_match)
     @current_match = nil
   end
 end

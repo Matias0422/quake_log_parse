@@ -3,6 +3,8 @@
 source "https://rubygems.org"
 
 gem 'parslet'
-gem 'byebug'
-gem 'memory_profiler'
 
+group :development, :test do
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'dotenv'
+end
