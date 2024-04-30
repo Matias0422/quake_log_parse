@@ -5,14 +5,10 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
-COPY .env.example ./
-RUN mv .env.example .env
+COPY .env.development.example .env.development
+COPY .env.test.example .env.test
 
-COPY queke_log_parser.rb ./
-COPY entities/ ./
-COPY enumerators/ ./
-COPY reports/ ./
-COPY spec/ ./
-COPY strategies/ ./
+COPY app/ ./app/
+COPY spec/ ./spec/
 
-CMD ["ruby", "queke_log_parser.rb"]
+CMD ["ruby", "./app/app.rb"]

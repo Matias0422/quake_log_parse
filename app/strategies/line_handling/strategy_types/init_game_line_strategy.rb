@@ -1,4 +1,4 @@
-require './entities/match.rb'
+require './app/entities/match.rb'
 
 require_relative '../line_handling_strategy.rb'
 

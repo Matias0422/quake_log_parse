@@ -1,9 +1,9 @@
 require 'dotenv/load'
 require 'parslet'
 
-require './enumarators/death_cause_enum.rb'
-require './factories/line_handling_strategy_factory.rb'
-require './strategies/reports/strategy_types/match_report_strategy.rb'
+require './app/enumarators/death_cause_enum.rb'
+require './app/factories/line_handling_strategy_factory.rb'
+require './app/strategies/reports/strategy_types/match_report_strategy.rb'
 
 class QuakeLogParser < Parslet::Parser
   MATCH_DELIMITER_REGEX = /-{60}/
@@ -13,7 +13,7 @@ class QuakeLogParser < Parslet::Parser
   rule(:space?) { space.maybe }
   rule(:number) { match('[0-9]+').repeat(1) }
   rule(:timestamp) { number >> str(':') >> number }
-  rule(:name) { match('\w[^\n]+\w').repeat(1) }
+  rule(:name) { str('<').maybe >> match('\w[^\n]*\w').repeat(1) >> str('>').maybe }
   rule(:death_cause) { match('[' + DeathCauseEnum.constants.join('|') + ']').repeat(1) }
 
   # Lines
@@ -102,5 +102,3 @@ class QuakeLogParser < Parslet::Parser
     @current_match = nil
   end
 end
-
-QuakeLogParser.new.call

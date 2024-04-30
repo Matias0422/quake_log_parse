@@ -46,7 +46,7 @@ class Player
   private
 
   def compute_kill_score(kill)
-    return decrement_victim_kill_score if world_player?
+    return decrement_victim_kill_score(kill.victim_id) if world_player?
 
     increment_kill_score!
   end
@@ -55,8 +55,8 @@ class Player
     match.increment_kills_by_means(kill.death_cause)
   end
 
-  def decrement_victim_kill_score
-    player = match.find_player_by_id(kill.victim_id)
+  def decrement_victim_kill_score(victim_id)
+    player = match.find_player_by_id(victim_id)
     player.decrement_kill_score!
   end
 end

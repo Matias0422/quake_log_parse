@@ -35,7 +35,7 @@ LINES_BATCH_NUMBER=100
 Build the Docker image using the provided Dockerfile:
 
 ```bash
-docker build -t quake-log-parser .
+docker build -t quake-log-parser --network host .
 ```
 
 #### Step 5: Run the Docker Container

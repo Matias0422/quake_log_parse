@@ -1,4 +1,4 @@
-require './enumarators/death_cause_enum.rb'
+require './app/enumarators/death_cause_enum.rb'
 
 require_relative 'player'
 
@@ -22,7 +22,7 @@ class Match
   end
 
   def add_player(player_id, name=nil)
-    @players[player_id] = Player.new(id: player_id, name: name, match: self)
+    @players[player_id] ||= Player.new(id: player_id, name: name, match: self)
   end
 
   def find_player_by_id(player_id)

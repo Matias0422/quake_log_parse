@@ -1,7 +1,7 @@
-require './strategies/line_handling/strategy_types/init_game_line_strategy.rb'
-require './strategies/line_handling/strategy_types/kill_line_strategy.rb'
-require './strategies/line_handling/strategy_types/player_connect_line_strategy.rb'
-require './strategies/line_handling/strategy_types/player_changed_line_strategy.rb'
+require './app/strategies/line_handling/strategy_types/init_game_line_strategy.rb'
+require './app/strategies/line_handling/strategy_types/kill_line_strategy.rb'
+require './app/strategies/line_handling/strategy_types/player_connect_line_strategy.rb'
+require './app/strategies/line_handling/strategy_types/player_changed_line_strategy.rb'
 
 class LineHandlingStrategyFactory
   HASH_FACTORY = {
