@@ -45,7 +45,3 @@ Run the Docker container:
 ```bash
 docker run quake-log-parser
 ```
-
-#### Step 6: Verify Execution
-
-Verify that your Ruby script is running inside the Docker container and is using the environment variables specified in the .env file.
