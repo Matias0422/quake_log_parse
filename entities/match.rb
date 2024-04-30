@@ -1,18 +1,22 @@
 require './enumarators/death_cause_enum.rb'
 
+require_relative 'player'
+
 class Match
   WORLD_PLAYER_ID = 1022
   WORLD_PLAYER_NAME = '<world>'
 
   @@counter = 0
 
-  attr_accessor :index, :players
+  attr_accessor :index, :players, :kills_by_means
 
   def initialize
     @@counter += 1
 
     @index = @@counter
+
     @players = {}
+    @kills_by_means = DeathCauseEnum.new_hash_counter
 
     add_player(WORLD_PLAYER_ID, WORLD_PLAYER_NAME)
   end
@@ -30,31 +34,34 @@ class Match
   end
 
   def player_names
-    @players.map { |_player_id, player_object| player_object.name }
+    map_players_without_world_player { |_player_id, player_object| player_object.name }
   end
 
   def players_name_and_kill_count
-    @players.map { |_player_id, player_object| [player_object.name, player_object.kills_count] }
+    map_players_without_world_player { |_player_id, player_object| [player_object.name.to_sym, player_object.kill_count] }
   end
 
   def players_name_and_kill_score
-    @players.map { |_player_id, player_object| [player_object.name, player_object.kill_score] }
+    map_players_without_world_player { |_player_id, player_object| [player_object.name.to_sym, player_object.kill_score] }
   end
 
-  def ordered_players_name_and_kill_score
-    players_name_and_kill_score.sort_by do |player_name_and_kill_score| 
-      player_name_and_kill_score[1]
+  def map_players_without_world_player
+    list = []
+
+    @players.each do |player_id, player_object|
+      next if player_id == world_player.id
+
+      list << yield(player_id, player_object)
     end
+
+    list
   end
 
-  def lost_score_by_victim_id(victim_id)
-    world_player.kills_sum_by_victim_id(victim_id)
-  end
+  def increment_kills_by_means(death_cause)
+    death_cause_key = death_cause.to_sym
 
-  def kills_by_means
-    death_cause_hash = DeathCauseEnum.new_hash_counter
-
-    @players.
+    self.kills_by_means[death_cause_key] ||= 0 
+    self.kills_by_means[death_cause_key] += 1
   end
 
   def world_player

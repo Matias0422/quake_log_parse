@@ -1,6 +1,7 @@
 require_relative '../line_handling_strategy.rb'
 
 class PlayerChangedLineStrategy < LineHandlingStrategy
+
   def handle(current_match)
     player_id = @parse_tree[:player_id].to_i
     player_name = @parse_tree[:player_name].to_s

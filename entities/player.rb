@@ -1,32 +1,62 @@
+require_relative 'kill'
+
 class Player
   @@counter = 0
 
-  attr_accessor :index, :id, :name, :kills, :match
+  attr_accessor :index, :id, :name, :kills, :kill_score, :match
 
-  def initialize(id:, name: nil, kills: [], match:)
+  def initialize(id:, name: nil, match:)
     @@counter += 1
 
     @index = @@counter
+
     @id = id
-    @name = name
-    @kills = []
     @match = match
+    @name = name
+  
+    @kills = []
+    @kill_score = 0
   end
 
   def add_kill(victim_id, death_cause)
-    @kills << Kill.new(victim_id: victim_id, death_cause: death_cause)
+    kill = Kill.new(victim_id: victim_id, death_cause: death_cause, player: self)
+
+    @kills << kill
+
+    compute_kill_score(kill)
+    compute_kills_by_means(kill)
   end
 
-  def kill_sum_by_victim_id(victim_id)
-    @kills.select { |kill| kill.victim_id == victim_id }.sum
+  def increment_kill_score!
+    self.kill_score += 1
   end
 
-  # Memoization
-  def kill_score
-    @kill_score ||= kill_count - match.lost_score_by_victim_id(id)
+  def decrement_kill_score!
+    self.kill_score -= 1
+  end
+
+  def world_player?
+    id == match.world_player.id
   end
 
   def kill_count
-    @kill_count ||= @kills.sum
+    @kills.size
+  end
+
+  private
+
+  def compute_kill_score(kill)
+    return decrement_victim_kill_score if world_player?
+
+    increment_kill_score!
+  end
+
+  def compute_kills_by_means(kill)
+    match.increment_kills_by_means(kill.death_cause)
+  end
+
+  def decrement_victim_kill_score
+    player = match.find_player_by_id(kill.victim_id)
+    player.decrement_kill_score!
   end
 end

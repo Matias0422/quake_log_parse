@@ -1,7 +1,9 @@
-require 'json'
+require 'dotenv/load'
 require 'parslet'
 
 require './enumarators/death_cause_enum.rb'
+require './factories/line_handling_strategy_factory.rb'
+require './strategies/reports/strategy_types/match_report_strategy.rb'
 
 class QuakeLogParser < Parslet::Parser
   MATCH_DELIMITER_REGEX = /-{60}/
@@ -61,17 +63,14 @@ class QuakeLogParser < Parslet::Parser
 
   def initialize
     @current_match = nil
-    @match_report = MatchReport.new
   end
 
   def call
     File.open(ENV['LOG_FILE_PATH'], "r") do |file|
-      file.each_slice(ENV['LINES_BATCH_NUMBER']) do |lines|
+      file.each_slice(ENV['LINES_BATCH_NUMBER'].to_i) do |lines|
         parse_lines(lines)
       end
     end
-
-    @match_report.print!
   end
 
   private
@@ -81,7 +80,7 @@ class QuakeLogParser < Parslet::Parser
       if line.match(MATCH_DELIMITER_REGEX) && @current_match.nil?
         next
       elsif line.match(MATCH_DELIMITER_REGEX) && @current_match
-        conclude_match
+        conclude_and_report!
       else
         parse_line(line)
       end
@@ -97,8 +96,9 @@ class QuakeLogParser < Parslet::Parser
     return
   end
 
-  def conclude_match
-    @match_report.increment_line(@current_match)
+  def conclude_and_report!
+    MatchReportStrategy.new.report_line!(@current_match)
+
     @current_match = nil
   end
 end

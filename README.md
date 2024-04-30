@@ -1,7 +1,5 @@
 # Quake Log Parse
 
-#### Running Locally
-
 #### Step 1: Prerequisites
 
 Before you begin, ensure that you have Docker installed on your system. You can download and install Docker from the official Docker website: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
