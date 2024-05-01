@@ -53,6 +53,12 @@ class Match
     list
   end
 
+  def players_ranking
+    players_name_and_kill_score.sort_by do |player_name_and_kill_score| 
+      -player_name_and_kill_score[1]
+    end.to_h
+  end
+
   def increment_total_kills!
     self.total_kills += 1
   end

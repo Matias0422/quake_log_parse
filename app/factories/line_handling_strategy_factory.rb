@@ -1,11 +1,9 @@
-require './app/strategies/line_handling/strategy_types/init_game_line_strategy.rb'
 require './app/strategies/line_handling/strategy_types/kill_line_strategy.rb'
 require './app/strategies/line_handling/strategy_types/player_connect_line_strategy.rb'
 require './app/strategies/line_handling/strategy_types/player_changed_line_strategy.rb'
 
 class LineHandlingStrategyFactory
   HASH_FACTORY = {
-    init_game_line: -> (parse_tree) { InitGameLineStrategy.new(parse_tree) },
     kill_line: -> (parse_tree) { KillLineStrategy.new(parse_tree) },
     player_connect_line: -> (parse_tree) { PlayerConnectLineStrategy.new(parse_tree) },
     player_changed_line: -> (parse_tree) { PlayerChangedLineStrategy.new(parse_tree) }

@@ -1,4 +1,8 @@
+require_relative 'enum_base'
+
 class DeathCauseEnum
+  extend EnumBase
+
   MOD_UNKNOWN = 'MOD_UNKNOWN'
   MOD_SHOTGUN = 'MOD_SHOTGUN'
   MOD_GAUNTLET = 'MOD_GAUNTLET'
@@ -28,10 +32,4 @@ class DeathCauseEnum
   MOD_KAMIKAZE = 'MOD_KAMIKAZE'
   MOD_JUICED = 'MOD_JUICED'
   MOD_GRAPPLE = 'MOD_GRAPPLE'
-
-  def self.new_hash_counter
-    constants.map do |death_cause|
-      [death_cause, 0]
-    end.to_h
-  end
 end

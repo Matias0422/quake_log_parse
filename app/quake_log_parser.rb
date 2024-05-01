@@ -1,9 +1,9 @@
-require 'dotenv/load'
 require 'parslet'
 
+require './app/entities/match.rb'
 require './app/enumarators/death_cause_enum.rb'
 require './app/factories/line_handling_strategy_factory.rb'
-require './app/strategies/reports/strategy_types/match_report_strategy.rb'
+require './app/reports/match_report.rb'
 
 class QuakeLogParser < Parslet::Parser
   MATCH_DELIMITER_REGEX = /-{60}/
@@ -17,8 +17,16 @@ class QuakeLogParser < Parslet::Parser
   rule(:death_cause) { match('[' + DeathCauseEnum.constants.join('|') + ']').repeat(1) }
 
   # Lines
-  rule(:init_game_line) {
-    str('InitGame: ')
+  rule(:player_connect_line) {
+    str('ClientConnect:') >>
+    space >>
+    number.as(:player_id)
+  }
+  rule(:player_changed_line) {
+    str('ClientUserinfoChanged: ') >>
+    number.as(:player_id) >>
+    str(' n\\') >>
+    name.as(:player_name)
   }
   rule(:kill_line) {
     str('Kill: ') >>
@@ -34,17 +42,6 @@ class QuakeLogParser < Parslet::Parser
     str(' by ') >>
     death_cause.as(:death_cause)
   }
-  rule(:player_connect_line) {
-    str('ClientConnect:') >>
-    space >>
-    number.as(:player_id)
-  }
-  rule(:player_changed_line) {
-    str('ClientUserinfoChanged: ') >>
-    number.as(:player_id) >>
-    str(' n\\') >>
-    name.as(:player_name)
-  }
 
   # Root
   rule(:default_beginning) { space? >> timestamp >> space }
@@ -52,10 +49,9 @@ class QuakeLogParser < Parslet::Parser
   rule(:line) {
     default_beginning >>
     (
-      init_game_line.as(:init_game_line) |
-      kill_line.as(:kill_line) |
       player_connect_line.as(:player_connect_line) |
-      player_changed_line.as(:player_changed_line)
+      player_changed_line.as(:player_changed_line) |
+      kill_line.as(:kill_line)
     ) >>
     default_ending
   }
@@ -68,37 +64,59 @@ class QuakeLogParser < Parslet::Parser
   def call
     File.open(ENV['LOG_FILE_PATH'], "r") do |file|
       file.each_slice(ENV['LINES_BATCH_NUMBER'].to_i) do |lines|
-        parse_lines(lines)
+        lines.each { |line| parse_line(line) }
       end
     end
   end
 
   private
 
-  def parse_lines(lines)
-    lines.each do |line|
-      if line.match(MATCH_DELIMITER_REGEX) && @current_match.nil?
-        next
-      elsif line.match(MATCH_DELIMITER_REGEX) && @current_match
-        conclude_and_report!
-      else
-        parse_line(line)
-      end
+  def parse_line(line)
+    if can_initialize_current_match?(line)
+      initialize_current_match!
+    elsif current_match_concluded?(line)
+      print_report!
+      reset_current_match!
+    else
+      line_handling!(line)
     end
   end
 
-  def parse_line(line)
-    parse_tree = parse(line)
-    line_handling_strategy = LineHandlingStrategyFactory.create_strategy(parse_tree)
+  def line_handling!(line)
+    parse_tree = create_parse_tree(line)
 
-    @current_match = line_handling_strategy.handle(@current_match)
-  rescue Parslet::ParseFailed
-    return
+    if parse_tree
+      line_handling_strategy(parse_tree).handle(@current_match)
+    end
   end
 
-  def conclude_and_report!
-    MatchReportStrategy.new.report_line!(@current_match)
+  def create_parse_tree(line)
+    parse(line)
+  rescue Parslet::ParseFailed
+    nil
+  end
 
+  def can_initialize_current_match?(line)
+    line.match(MATCH_DELIMITER_REGEX) && @current_match.nil?
+  end
+
+  def current_match_concluded?(line)
+    line.match(MATCH_DELIMITER_REGEX) && @current_match
+  end
+
+  def line_handling_strategy(parse_tree)
+    LineHandlingStrategyFactory.create_strategy(parse_tree)
+  end
+
+  def initialize_current_match!
+    @current_match = Match.new
+  end
+
+  def print_report!
+    MatchReport.new.print!(@current_match)
+  end
+
+  def reset_current_match!
     @current_match = nil
   end
 end
