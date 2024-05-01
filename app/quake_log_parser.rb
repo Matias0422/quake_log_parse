@@ -17,6 +17,12 @@ class QuakeLogParser < Parslet::Parser
   rule(:death_cause) { match('[' + DeathCauseEnum.constants.join('|') + ']').repeat(1) }
 
   # Lines
+  rule(:init_game_line) {
+    str('InitGame:')
+  }
+  rule(:shut_down_game_line) {
+    str('ShutdownGame:')
+  }
   rule(:player_connect_line) {
     str('ClientConnect:') >>
     space >>
@@ -49,6 +55,8 @@ class QuakeLogParser < Parslet::Parser
   rule(:line) {
     default_beginning >>
     (
+      init_game_line.as(:init_game_line) |
+      shut_down_game_line.as(:shut_down_game_line) |
       player_connect_line.as(:player_connect_line) |
       player_changed_line.as(:player_changed_line) |
       kill_line.as(:kill_line)
@@ -72,11 +80,11 @@ class QuakeLogParser < Parslet::Parser
   private
 
   def parse_line(line)
-    if can_initialize_current_match?(line)
-      initialize_current_match!
-    elsif current_match_concluded?(line)
+    if can_initialize_match?(line)
+      initialize_match!
+    elsif can_finalize_match?(line)
       print_report!
-      reset_current_match!
+      reset_match!
     else
       line_handling!(line)
     end
@@ -100,19 +108,19 @@ class QuakeLogParser < Parslet::Parser
     LineHandlingStrategyFactory.create_strategy(parse_tree)
   end
 
-  def can_initialize_current_match?(line)
+  def can_initialize_match?(line)
     line.match(MATCH_DELIMITER_REGEX) && @current_match.nil?
   end
 
-  def current_match_concluded?(line)
-    line.match(MATCH_DELIMITER_REGEX) && @current_match
+  def can_finalize_match?(line)
+    line.match(MATCH_DELIMITER_REGEX) && @current_match&.parse_finished?
   end
 
-  def initialize_current_match!
+  def initialize_match!
     @current_match = Match.new
   end
 
-  def reset_current_match!
+  def reset_match!
     @current_match = nil
   end
 

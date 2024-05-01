@@ -1,4 +1,5 @@
 require './app/enumarators/death_cause_enum.rb'
+require './app/enumarators/parse_state_enum.rb'
 
 require_relative 'player'
 
@@ -7,7 +8,7 @@ class Match
 
   @@counter = 0
 
-  attr_accessor :index, :players, :total_kills, :kills_by_means
+  attr_accessor :index, :players, :parse_state, :total_kills, :kills_by_means
 
   def initialize
     @@counter += 1
@@ -15,6 +16,7 @@ class Match
     @index = @@counter
 
     @players = {}
+    @parse_state = nil
     @kills_by_means = DeathCauseEnum.new_hash_counter
     @total_kills = 0
 
@@ -27,6 +29,22 @@ class Match
 
   def find_player_by_id(player_id)
     @players[player_id]
+  end
+
+  def parse_initialize!
+    self.parse_state = ParseStateEnum::INITIALIZED
+  end
+
+  def parse_finalize!
+    self.parse_state = ParseStateEnum::FINISHED
+  end
+
+  def parse_initialized?
+    parse_state == ParseStateEnum::INITIALIZED
+  end
+
+  def parse_finished?
+    parse_state == ParseStateEnum::FINISHED
   end
 
   def player_names
