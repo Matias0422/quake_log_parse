@@ -5,14 +5,14 @@ class Player
 
   attr_accessor :index, :id, :name, :kills, :kill_score, :match
 
-  def initialize(id:, name: nil, match:)
+  def initialize(id:, match:)
     @@counter += 1
 
     @index = @@counter
 
     @id = id
     @match = match
-    @name = name
+    @name = nil
   
     @kills = []
     @kill_score = 0
@@ -23,8 +23,7 @@ class Player
 
     @kills << kill
 
-    compute_kill_score(kill)
-    compute_kills_by_means(kill)
+    compute_kill!(kill)
   end
 
   def increment_kill_score!
@@ -45,18 +44,22 @@ class Player
 
   private
 
-  def compute_kill_score(kill)
-    return decrement_victim_kill_score(kill.victim_id) if world_player?
+  def compute_kill!(kill)
+    match.increment_total_kills!
+    match.increment_kills_by_means!(kill.death_cause)
+
+    compute_kill_score!(kill)
+  end
+
+  def compute_kill_score!(kill)
+    return decrement_victim_kill_score!(kill.victim_id) if world_player?
 
     increment_kill_score!
   end
 
-  def compute_kills_by_means(kill)
-    match.increment_kills_by_means(kill.death_cause)
-  end
-
-  def decrement_victim_kill_score(victim_id)
+  def decrement_victim_kill_score!(victim_id)
     player = match.find_player_by_id(victim_id)
+
     player.decrement_kill_score!
   end
 end

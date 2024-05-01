@@ -4,11 +4,10 @@ require_relative 'player'
 
 class Match
   WORLD_PLAYER_ID = 1022
-  WORLD_PLAYER_NAME = '<world>'
 
   @@counter = 0
 
-  attr_accessor :index, :players, :kills_by_means
+  attr_accessor :index, :players, :total_kills, :kills_by_means
 
   def initialize
     @@counter += 1
@@ -17,20 +16,17 @@ class Match
 
     @players = {}
     @kills_by_means = DeathCauseEnum.new_hash_counter
+    @total_kills = 0
 
-    add_player(WORLD_PLAYER_ID, WORLD_PLAYER_NAME)
+    add_player(WORLD_PLAYER_ID)
   end
 
-  def add_player(player_id, name=nil)
-    @players[player_id] ||= Player.new(id: player_id, name: name, match: self)
+  def add_player(player_id)
+    @players[player_id] ||= Player.new(id: player_id, match: self)
   end
 
   def find_player_by_id(player_id)
     @players[player_id]
-  end
-
-  def total_kills
-    @players.sum { |_player_id, player_object| player_object.kills.size }
   end
 
   def player_names
@@ -57,7 +53,11 @@ class Match
     list
   end
 
-  def increment_kills_by_means(death_cause)
+  def increment_total_kills!
+    self.total_kills += 1
+  end
+
+  def increment_kills_by_means!(death_cause)
     death_cause_key = death_cause.to_sym
 
     self.kills_by_means[death_cause_key] ||= 0 
