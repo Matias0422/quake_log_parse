@@ -1,6 +1,7 @@
 require_relative '../line_handling_strategy.rb'
 
-class KillLineStrategy < LineHandlingStrategy
+class KillLineStrategy
+  include LineHandlingStrategy
 
   def handle(current_match)
     killer_id = @parse_tree[:killer_id].to_i

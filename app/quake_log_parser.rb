@@ -96,6 +96,10 @@ class QuakeLogParser < Parslet::Parser
     nil
   end
 
+  def line_handling_strategy(parse_tree)
+    LineHandlingStrategyFactory.create_strategy(parse_tree)
+  end
+
   def can_initialize_current_match?(line)
     line.match(MATCH_DELIMITER_REGEX) && @current_match.nil?
   end
@@ -104,19 +108,15 @@ class QuakeLogParser < Parslet::Parser
     line.match(MATCH_DELIMITER_REGEX) && @current_match
   end
 
-  def line_handling_strategy(parse_tree)
-    LineHandlingStrategyFactory.create_strategy(parse_tree)
-  end
-
   def initialize_current_match!
     @current_match = Match.new
   end
 
-  def print_report!
-    MatchReport.new.print!(@current_match)
-  end
-
   def reset_current_match!
     @current_match = nil
+  end
+
+  def print_report!
+    MatchReport.new.print!(@current_match)
   end
 end
