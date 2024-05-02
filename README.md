@@ -97,7 +97,7 @@ Ensure your log file is placed in the root directory of the project with the nam
 
 #### Step 3: Build the Docker Image
 
-Set the Build the Docker image:
+Build the Docker image:
 
 ```bash
 make setup
