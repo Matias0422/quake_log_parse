@@ -116,3 +116,11 @@ If you want to run the RSpec tests:
 ```bash
 make run-test
 ```
+
+#### Optional Step: Clean Up
+
+After you're done, you can clean up by stopping any running containers and removing the Docker image:
+
+```bash
+make clean
+```
