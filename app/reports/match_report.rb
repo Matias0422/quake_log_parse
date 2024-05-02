@@ -5,6 +5,7 @@ class MatchReport
   def print!(match)
     ap(
       "game_#{match.index}".to_sym => {
+        :parse_state => match.parse_state,
         :total_kills => match.total_kills,
         :players => match.player_names,
         :kills => match.players_name_and_kill_count.to_h,

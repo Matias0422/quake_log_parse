@@ -1,4 +1,4 @@
-module LineHandlingStrategy
+module MatchLineHandlingStrategy
 
   def initialize(parse_tree)
     @parse_tree = parse_tree

@@ -1,10 +1,10 @@
-require './app/strategies/line_handling/strategy_types/init_game_line_strategy.rb'
-require './app/strategies/line_handling/strategy_types/shut_down_game_line_strategy.rb'
-require './app/strategies/line_handling/strategy_types/kill_line_strategy.rb'
-require './app/strategies/line_handling/strategy_types/player_connect_line_strategy.rb'
-require './app/strategies/line_handling/strategy_types/player_changed_line_strategy.rb'
+require './app/strategies/match_line_handling/strategy_types/init_game_line_strategy.rb'
+require './app/strategies/match_line_handling/strategy_types/shut_down_game_line_strategy.rb'
+require './app/strategies/match_line_handling/strategy_types/kill_line_strategy.rb'
+require './app/strategies/match_line_handling/strategy_types/player_connect_line_strategy.rb'
+require './app/strategies/match_line_handling/strategy_types/player_changed_line_strategy.rb'
 
-class LineHandlingStrategyFactory
+class MatchLineHandlingStrategyFactory
   HASH_FACTORY = {
     init_game_line: -> (parse_tree) { InitGameLineStrategy.new(parse_tree) },
     shut_down_game_line: -> (parse_tree) { ShutDownGameLineStrategy.new(parse_tree) },
