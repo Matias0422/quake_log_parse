@@ -8,7 +8,7 @@ RSpec.describe QuakeLogParser do
 
   before do
     file_double = double('file')
-    allow(File).to receive(:open).with(ENV['LOG_FILE_PATH'], 'r').and_yield(file_double)
+    allow(File).to receive(:open).with(ENV['LOG_FILE_NAME'], 'r').and_yield(file_double)
     allow(file_double).to receive(:each_slice).with(ENV['LINES_BATCH_NUMBER'].to_i).and_yield(log_scenario.split("\n"))
   end
 

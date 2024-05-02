@@ -12,7 +12,7 @@ class QuakeLogParser
   end
 
   def call
-    File.open(ENV['LOG_FILE_PATH'], "r") do |file|
+    File.open(ENV['LOG_FILE_NAME'], "r") do |file|
       file.each_slice(ENV['LINES_BATCH_NUMBER'].to_i) do |lines|
         lines.each { |line| parse_line(line) }
       end

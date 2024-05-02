@@ -1,9 +1,6 @@
+require 'dotenv'
 
-if ENV['APP_ENV'] != 'production'
-  require 'dotenv'
-
-  Dotenv.load(".env.#{(ENV['APP_ENV'] || 'development')}")
-end
+Dotenv.load(".env.#{(ENV['APP_ENV'] || 'local')}")
 
 require_relative './parsers/quake_log_parser.rb'
 

@@ -5,10 +5,6 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
-COPY .env.development.example .env.development
-COPY .env.test.example .env.test
-
-COPY app/ ./app/
-COPY spec/ ./spec/
+COPY . .
 
 CMD ["ruby", "./app/app.rb"]
