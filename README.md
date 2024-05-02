@@ -2,8 +2,7 @@
 
 ### About
 
-This project parses a Quake 3 game log file and print a report of each Match.
-A example of a report can be seen bellow: 
+The Quake Log Parser project parses a Quake 3 game log file and generates a report for each match. Below is an example of a generated report:
 
 ```ruby
 {
@@ -69,24 +68,18 @@ A example of a report can be seen bellow:
 }
 ```
 
-### Running Locally
+### Running Locally using Docker
 
-#### Step 1: Prerequisites
+#### Prerequisites
 
-Before you begin, ensure that you have Docker installed on your system. You can download and install Docker from the official Docker website: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
+Before running the project locally, ensure you have the following installed:
 
-#### Step 2: Clone the Repository
+- Docker
+- Make
 
-Clone the repository containing the Dockerfile, your Ruby script, and the `.env.example` file:
+#### Step 1: Create .env.local File
 
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
-#### Step 3: Create .env File
-
-Create a `.env` file in the root directory of your project based on the provided `.env.example` file. Update the values of `LOG_FILE_PATH` and `LINES_BATCH_NUMBER` as needed.
+Create a `.env.local` file in the root directory of your project based on the provided `.env.local.example` file.
 
 ```bash
 cp .env.local.example .env.local
@@ -98,11 +91,13 @@ Edit the .env file and set the values according to your requirements:
 LOG_FILE_NAME=logfile.txt
 LINES_BATCH_NUMBER=100
 ```
-You need to place the log file in the root of the project.
+#### Step 2:Place Your Log File in the Root of the Project
 
-#### Step 4: Build the Docker Image
+Ensure your log file is placed in the root directory of the project with the name specified in the `LOG_FILE_NAME` environment variable.
 
-Build the Docker image:
+#### Step 3: Build the Docker Image
+
+Set the Build the Docker image:
 
 ```bash
 make setup
@@ -110,13 +105,13 @@ make setup
 
 #### Step 5: Run the Docker Container
 
-Run the Docker container:
+Run the Docker container to start the parser:
 
 ```bash
 make run-local
 ```
 
-If you want to run the rspec tests:
+If you want to run the RSpec tests:
 
 ```bash
 make run-test
