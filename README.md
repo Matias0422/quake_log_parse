@@ -91,7 +91,7 @@ Edit the .env file and set the values according to your requirements:
 LOG_FILE_NAME=logfile.txt
 LINES_BATCH_NUMBER=100
 ```
-#### Step 2:Place Your Log File in the Root of the Project
+#### Step 2: Place Your Log File in the Root of the Project
 
 Ensure your log file is placed in the root directory of the project with the name specified in the `LOG_FILE_NAME` environment variable.
 
