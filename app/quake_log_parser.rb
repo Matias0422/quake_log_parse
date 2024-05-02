@@ -1,4 +1,6 @@
 require 'parslet'
+require 'parslet/convenience'
+require 'byebug'
 
 require './app/entities/match.rb'
 require './app/enumarators/death_cause_enum.rb'
@@ -13,7 +15,6 @@ class QuakeLogParser < Parslet::Parser
   rule(:space?) { space.maybe }
   rule(:number) { match('[0-9]+').repeat(1) }
   rule(:timestamp) { number >> str(':') >> number }
-  rule(:name) { str('<').maybe >> match('\w[^\n]*\w').repeat(1) >> str('>').maybe }
   rule(:death_cause) { match('[' + DeathCauseEnum.constants.join('|') + ']').repeat(1) }
 
   # Lines
@@ -32,7 +33,7 @@ class QuakeLogParser < Parslet::Parser
     str('ClientUserinfoChanged: ') >>
     number.as(:player_id) >>
     str(' n\\') >>
-    name.as(:player_name)
+    (str('\t').absent? >> any ).repeat.as(:player_name)
   }
   rule(:kill_line) {
     str('Kill: ') >>
@@ -42,9 +43,9 @@ class QuakeLogParser < Parslet::Parser
     space >>
     number >>
     str(': ') >>
-    name.as(:killer_name) >>
+    (str(' killed ').absent? >> any).repeat.as(:killer_name) >>
     str(' killed ') >>
-    name.as(:victim_name) >>
+    (str(' by ').absent? >> any).repeat.as(:victim_name) >>
     str(' by ') >>
     death_cause.as(:death_cause)
   }
@@ -83,8 +84,9 @@ class QuakeLogParser < Parslet::Parser
     if can_initialize_match?(line)
       initialize_match!
     elsif can_finalize_match?(line)
-      print_report!
-      reset_match!
+      finalize_match!
+    elsif is_match_incomplete?(line)
+      make_match_incomplete!
     else
       line_handling!(line)
     end
@@ -99,7 +101,7 @@ class QuakeLogParser < Parslet::Parser
   end
 
   def create_parse_tree(line)
-    parse(line)
+    parse_with_debug(line)
   rescue Parslet::ParseFailed
     nil
   end
@@ -116,8 +118,23 @@ class QuakeLogParser < Parslet::Parser
     line.match(MATCH_DELIMITER_REGEX) && @current_match&.parse_finished?
   end
 
+  def is_match_incomplete?(line)
+    line.match(MATCH_DELIMITER_REGEX) && @current_match&.parse_initialized?
+  end
+
   def initialize_match!
     @current_match = Match.new
+  end
+
+  def finalize_match!
+    print_report!
+    reset_match!
+  end
+
+  def make_match_incomplete!
+    @current_match.parse_incomplete!
+    finalize_match!
+    initialize_match!
   end
 
   def reset_match!

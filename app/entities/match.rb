@@ -35,12 +35,20 @@ class Match
     self.parse_state = ParseStateEnum::INITIALIZED
   end
 
+  def parse_incomplete!
+    self.parse_state = ParseStateEnum::INCOMPLETE
+  end
+
   def parse_finalize!
     self.parse_state = ParseStateEnum::FINISHED
   end
 
   def parse_initialized?
     parse_state == ParseStateEnum::INITIALIZED
+  end
+
+  def parse_incomplete?
+    parse_state == ParseStateEnum::INCOMPLETE
   end
 
   def parse_finished?
