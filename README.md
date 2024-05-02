@@ -88,7 +88,7 @@ cp .env.local.example .env.local
 Edit the .env file and set the values according to your requirements:
 
 ```env
-LOG_FILE_NAME=logfile.txt
+LOG_FILE_NAME=quake_log.txt
 LINES_BATCH_NUMBER=100
 ```
 #### Step 2: Place Your Log File in the Root of the Project
