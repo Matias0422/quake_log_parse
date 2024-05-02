@@ -1,8 +1,9 @@
-require 'rspec'
+require './spec/spec_helper.rb'
+
 require 'parslet'
 require 'parslet/rig/rspec'
 require './app/enumarators/death_cause_enum.rb'
-require './app/match_line_parser.rb'
+require './app/parsers/match_line_parser.rb'
 
 RSpec.describe MatchLineParser do
   let(:parser) { MatchLineParser.new }
