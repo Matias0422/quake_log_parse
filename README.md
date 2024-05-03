@@ -1,4 +1,6 @@
-# Quake Log Parse
+# Quake Log Parser
+
+### Running Locally
 
 #### Step 1: Prerequisites
 
