@@ -2,7 +2,7 @@
 
 ### About
 
-The Quake Log Parser project parses a Quake 3 game log file and generates a report for each match. Below is an example of a generated report:
+The Quake Log Parser project parses a Quake 3 Arena game log file and generates a report for each match. Below is an example of a generated report:
 
 ```ruby
 {
@@ -88,8 +88,8 @@ cp .env.local.example .env.local
 Edit the .env file and set the values according to your requirements:
 
 ```env
-LOG_FILE_NAME=quake_log.txt
-LINES_BATCH_NUMBER=100
+LOG_FILE_NAME=quake_log.txt # Name of the log file
+LINES_BATCH_NUMBER=100 # Number of lines that will be loaded each time
 ```
 #### Step 2: Place Your Log File in the Root of the Project
 

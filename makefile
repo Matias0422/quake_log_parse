@@ -12,5 +12,4 @@ run-test:
 	docker run --rm --env-file ${ENV_TEST_FILE} ${DOCKER_IMAGE_NAME} rspec
 
 clean:
-	docker stop $$(docker ps -q --filter ancestor=${DOCKER_IMAGE_NAME})
 	docker rmi ${DOCKER_IMAGE_NAME}
