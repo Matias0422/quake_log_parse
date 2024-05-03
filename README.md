@@ -91,6 +91,9 @@ Edit the .env file and set the values according to your requirements:
 LOG_FILE_NAME=quake_log.txt # Name of the log file
 LINES_BATCH_NUMBER=100 # Number of lines that will be loaded each time
 ```
+
+PS: both environment variables are required
+
 #### Step 2: Place Your Log File in the Root of the Project
 
 Ensure your log file is placed in the root directory of the project with the name specified in the `LOG_FILE_NAME` environment variable.
